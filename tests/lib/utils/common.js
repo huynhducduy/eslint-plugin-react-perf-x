@@ -99,6 +99,10 @@ function testRule(
       options: [{ nativeAllowList: ["style"] }],
     },
     {
+      code: `<Item classNames={${ruleCode}} />`,
+      options: [{ allowList: ["classNames"] }],
+    },
+    {
       code: `<Item style={${ruleCode}} />`,
       options: [{ ignoreComponents: ["Item"] }],
     },
