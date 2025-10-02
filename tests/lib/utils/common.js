@@ -140,6 +140,16 @@ function testRule(
         { ignoreSources: [{ source: "react-foo", importNames: ["Item"] }] },
       ],
     },
+    {
+      code: `import Item from "react-foo/react";<Item style={${ruleCode}} />`,
+      options: [
+        { ignoreSources: [{ source: "react-foo", importNames: ["Item"] }] },
+      ],
+    },
+    {
+      code: `import Item from "react-foo/react";<Item style={${ruleCode}} />`,
+      options: [{ ignoreSources: ["react-foo"] }],
+    },
     { code: "<Item prop={0} />" },
     { code: "var a;<Item prop={a} />" },
     { code: "var a;a = 1;<Item prop={a} />" },
