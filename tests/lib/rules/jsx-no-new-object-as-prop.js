@@ -18,34 +18,60 @@ var invalidObjectExpressions = [
 
 var invalidNewExpressions = [
   { code: "<Item prop={new Object} />", line: 1, column: 13 },
-  { code: "<Item prop={new Object()} />", line: 1, column: 13 }
-].map(function({ code, line, column }) {
+  { code: "<Item prop={new Object()} />", line: 1, column: 13 },
+  { code: "<Item prop={new Date()} />", line: 1, column: 13 },
+  { code: "<Item prop={new Promise(() => {})} />", line: 1, column: 13 },
+  {
+    code: "class CustomClass {}; <Item prop={new CustomClass()} />",
+    line: 1,
+    column: 35,
+  },
+].map(function ({ code, line, column }) {
   return {
     code,
     errors: [
       {
         line,
         column,
-        type: "NewExpression"
-      }
-    ]
+        type: "NewExpression",
+      },
+    ],
   };
 });
 
 var invalidCallExpressions = [
-  { code: "<Item prop={Object()} />", line: 1, column: 13 }
-].map(function({ code, line, column }) {
+  { code: "<Item prop={Object()} />", line: 1, column: 13 },
+].map(function ({ code, line, column }) {
   return {
     code,
     errors: [
       {
         line,
         column,
-        type: "CallExpression"
-      }
-    ]
+        type: "CallExpression",
+      },
+    ],
   };
 });
+
+var validMemoizedExpressions = [
+  { code: "const foo = useMemo(() => new Date(), []); <Item prop={foo} />" },
+  {
+    code: "const foo = useMemo(() => new Promise(() => {}), []); <Item prop={foo} />",
+  },
+  {
+    code: "class CustomClass {}; const foo = useMemo(() => new CustomClass(), []); <Item prop={foo} />",
+  },
+  {
+    code: "const foo = useCallback(() => new Date(), []); <Item prop={foo} />",
+  },
+  {
+    code: "const foo = React.useMemo(() => new Date(), []); <Item prop={foo} />",
+  },
+  {
+    code: "const foo = React.useCallback(() => new Date(), []); <Item prop={foo} />",
+  },
+];
 
 module.exports = testRule(
   "../../../lib/rules/jsx-no-new-object-as-prop",
@@ -57,5 +83,6 @@ module.exports = testRule(
     invalidObjectExpressions,
     invalidNewExpressions,
     invalidCallExpressions
-  )
+  ),
+  validMemoizedExpressions
 );
