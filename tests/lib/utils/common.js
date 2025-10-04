@@ -17,7 +17,7 @@ function testRule(
       ecmaFeatures: {
         jsx: true,
       },
-    }
+    },
   };
 
   invalid = [
@@ -128,6 +128,28 @@ function testRule(
         { ignoreSources: [{ source: "react-foo", importNames: ["Item"] }] },
       ],
     },
+    {
+      code: `import {Item} from "react-foo";<Item.Tag style={${ruleCode}} />`,
+      options: [
+        { ignoreSources: [{ source: "react-foo", importNames: ["Item"] }] },
+      ],
+    },
+    {
+      code: `import * as Item from "react-foo";<Item.Tag style={${ruleCode}} />`,
+      options: [
+        { ignoreSources: [{ source: "react-foo", importNames: ["Item"] }] },
+      ],
+    },
+    {
+      code: `import Item from "react-foo/react";<Item style={${ruleCode}} />`,
+      options: [
+        { ignoreSources: [{ source: "react-foo", importNames: ["Item"] }] },
+      ],
+    },
+    {
+      code: `import Item from "react-foo/react";<Item style={${ruleCode}} />`,
+      options: [{ ignoreSources: ["react-foo"] }],
+    },
     { code: "<Item prop={0} />" },
     { code: "var a;<Item prop={a} />" },
     { code: "var a;a = 1;<Item prop={a} />" },
@@ -165,7 +187,10 @@ function testRule(
     }),
     invalid: invalid.map((e) => {
       e.languageOptions = languageOptions;
-      e.errors = e.errors.map(errors => ({ ...errors, message: errorMessage }))
+      e.errors = e.errors.map((errors) => ({
+        ...errors,
+        message: errorMessage,
+      }));
       return e;
     }),
   });
